@@ -4,7 +4,7 @@ import {
     expect,
     jest
 } from '@jest/globals'
-import Routes from './../../src/routes.js'
+import Routes from '../../src/routes.js'
 
 describe('#Routes test suite', () => {
     const defaultParams = {
