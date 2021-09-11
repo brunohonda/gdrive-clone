@@ -4,14 +4,21 @@ import Busboy from 'busboy';
 import { logger } from './logger';
 
 export default class UploadHandler {
-    constructor({ io, socketId, downloadsFolder }) {
+    constructor({ io, socketId, downloadsFolder, messageTimeDelay = 200 }) {
         this.io = io;
         this.socketId = socketId;
         this.downloadsFolder = downloadsFolder;
+        this.messageTimeDelay= messageTimeDelay;
         this.ON_UPLOAD_EVENT = 'file-upload';
     }
 
+    canEmitNotification(lastNotification) {
+        return (Date.now() - lastNotification) >= this.messageTimeDelay;
+    }
+
     onData(filename) {
+        this.lastNotification = Date.now();
+
         async function* handleData(source) {
             let processedAlready = 0;
 
@@ -19,6 +26,11 @@ export default class UploadHandler {
                 yield chunk;
                 processedAlready += chunk.length;
 
+                if(!this.canEmitNotification(this.lastNotification)) {
+                    continue;
+                }
+
+                this.lastNotification = Date.now();
                 this.io.to(this.socketId)
                     .emit(this.ON_UPLOAD_EVENT, { processedAlready, filename });
                 
