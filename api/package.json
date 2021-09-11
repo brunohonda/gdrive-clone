@@ -15,10 +15,12 @@
   "author": "Bruno Honda",
   "license": "ISC",
   "devDependencies": {
+    "faker": "^5.5.3",
     "jest": "^27.1.0",
     "nodemon": "^2.0.12"
   },
   "dependencies": {
+    "busboy": "^0.3.1",
     "pino": "6.8",
     "pino-pretty": "5.1",
     "pretty-bytes": "5.6",
