@@ -1,27 +1,45 @@
 import {
+    beforeEach,
     describe,
     test,
     expect,
     jest
-} from '@jest/globals'
+} from '@jest/globals';
+import faker from 'faker';
+import { logger } from '../../src/logger';
 import Routes from '../../src/routes.js'
+import UploadHandler from '../../src/uploadHandler.js';
+import TestUtil from '../_util/testUtil.js'
 
 describe('#Routes test suite', () => {
+    const request = TestUtil.generateReadableStream([ 'some file bytes ']);
+    const response = TestUtil.generateWritableStream(jest.fn());
+
     const defaultParams = {
-        request: {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
-            method: '',
-            body: {}
-        },
-        response: {
-            setHeader: jest.fn(),
-            writeHead: jest.fn(),
-            end: jest.fn()
-        },
+        request: Object.assign(
+            request,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                method: '',
+                body: {}
+            }
+        ),
+        response: Object.assign(
+            response,
+            {
+                setHeader: jest.fn(),
+                writeHead: jest.fn(),
+                end: jest.fn()
+            }
+        ),
         values: () => Object.values(defaultParams)
     }
+
+    beforeEach(() => {
+        jest.spyOn(logger, 'info').mockImplementation();
+    })
 
     describe('#setSocketInstance', () => {
         test('setSocket should store io instance', () => {
@@ -126,6 +144,30 @@ describe('#Routes test suite', () => {
             expect(params.response.writeHead).toHaveBeenCalledWith(200)
             expect(params.response.end).toHaveBeenCalledWith(JSON.stringify(filesStatusesMock))
 
+        })
+    })
+
+    describe('#post', () => {
+        test('should validade post route workflow', async () => {
+            const routes = new Routes('/tmp');
+            const options = { ...defaultParams };
+            options.request.method = 'POST';
+            options.request.url = faker.datatype.uuid();
+
+            jest.spyOn(UploadHandler.prototype, UploadHandler.prototype.registerEvents.name)
+                .mockImplementation((headers, onFinish) => {
+                    const writable = TestUtil.generateWritableStream(jest.fn());
+
+                    writable.on('finish', onFinish);
+
+                    return writable;
+                })
+
+            await routes.handler(...options.values());
+
+            expect(UploadHandler.prototype.registerEvents).toHaveBeenCalled();
+            expect(options.response.writeHead).toHaveBeenCalledWith(200);
+            expect(options.response.end).toHaveBeenCalledWith(JSON.stringify({ result: 'Files uploaded with success!' }));
         })
     })
 })
