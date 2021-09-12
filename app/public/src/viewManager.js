@@ -1,7 +1,7 @@
 export default class ViewManager {
 
     constructor(targetElementId) {
-        this.targetElement = document.getElementById(targetElementId);
+        this.fileTable = document.getElementById('file-table');
     }
 
     getIcon(file) {
@@ -37,6 +37,6 @@ export default class ViewManager {
         </tr>
         `;
 
-        this.targetElement.innerHTML = files.map(template).join('');
+        this.fileTable.innerHTML = files.map(template).join('');
     }
 }
