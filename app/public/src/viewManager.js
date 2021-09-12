@@ -2,6 +2,18 @@ export default class ViewManager {
 
     constructor(targetElementId) {
         this.fileTable = document.getElementById('file-table');
+        // this.btnNewFile = document.getElementById('btn-new-file');
+
+        // this.btnNewFile.on('click', this.uploadFile.bind(this));
+
+        this.formatter = Intl.DateTimeFormat('pt', {
+            locale: 'pt-br',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })
     }
 
     getIcon(file) {
@@ -30,10 +42,10 @@ export default class ViewManager {
     updateCurrentFiles(files) {
         const template = (item) => `
         <tr>
-            <td>${this.makeIcon(item.file)} ${item.file}</td>
-            <td>${item.owner}</td>
-            <td>${new Date(item.lastModified).toLocaleString()}</td>
-            <td>${item.size}</td>
+            <td>${ this.makeIcon(item.file) } ${ item.file }</td>
+            <td>${ item.owner }</td>
+            <td>${ this.formatter.format(new Date(item.lastModified)) }</td>
+            <td>${ item.size }</td>
         </tr>
         `;
 
