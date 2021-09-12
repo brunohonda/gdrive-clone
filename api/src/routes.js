@@ -3,7 +3,7 @@ import { logger } from "./logger.js"
 import { dirname, resolve } from 'path'
 import { fileURLToPath, parse } from 'url'
 
-import UploadHandler from './uploadHandler';
+import UploadHandler from './uploadHandler.js';
 import { pipeline } from "stream/promises";
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
