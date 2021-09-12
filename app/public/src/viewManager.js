@@ -1,10 +1,9 @@
 export default class ViewManager {
 
-    constructor(targetElementId) {
+    constructor() {
         this.fileTable = document.getElementById('file-table');
-        // this.btnNewFile = document.getElementById('btn-new-file');
-
-        // this.btnNewFile.on('click', this.uploadFile.bind(this));
+        this.newFileButton = document.getElementById('btn-new-file');
+        this.newFileInput = document.getElementById('fileElem')
 
         this.formatter = Intl.DateTimeFormat('pt', {
             locale: 'pt-br',
@@ -14,6 +13,16 @@ export default class ViewManager {
             hour: '2-digit',
             minute: '2-digit'
         })
+    }
+
+    configureOnFileChange(fn) {
+        this.newFileInput.onchange = (event) => {
+            fn(event.target.files);
+        }
+    }
+
+    configureFileButtonClick() {
+        this.newFileButton.onclick = () => this.newFileInput.click();
     }
 
     getIcon(file) {
