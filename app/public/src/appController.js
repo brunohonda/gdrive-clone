@@ -1,7 +1,8 @@
 export default class AppController {
-    constructor({ connectionManager, viewManager }) {
+    constructor({ connectionManager, viewManager, dragAndDropManager }) {
         this.connectionManager = connectionManager;
         this.viewManager = viewManager;
+        this.dragAndDropManager = dragAndDropManager;
 
         this.uploadFiles = new Map();
     }
@@ -11,6 +12,9 @@ export default class AppController {
         this.viewManager.configureModal();
         this.viewManager.configureOnFileChange(this.onFileChange.bind(this));
         this.connectionManager.configureEvents({ onProgress: this.onProgress.bind(this) });
+        this.dragAndDropManager.initialize({
+            onDrop: this.onFileChange.bind(this)
+        });
 
         this.viewManager.updateStatus(0);
 
