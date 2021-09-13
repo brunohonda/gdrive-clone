@@ -18,7 +18,7 @@ export default class ConnectionManager {
         const formData = new FormData();
         formData.append('files', file);
 
-        const response = await fetch(`${this.apiUrl}?sockerId=${this.socketId}`, {
+        const response = await fetch(`${this.apiUrl}?socketId=${this.socketId}`, {
             method: 'POST',
             body: formData
         });

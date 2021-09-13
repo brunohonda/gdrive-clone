@@ -3,7 +3,10 @@ export default class ViewManager {
     constructor() {
         this.fileTable = document.getElementById('file-table');
         this.newFileButton = document.getElementById('btn-new-file');
-        this.newFileInput = document.getElementById('fileElem')
+        this.newFileInput = document.getElementById('fileElem');
+        this.progressModal = document.getElementById('progress-modal');
+        this.progressBar = document.getElementById('progress-bar');
+        this.output = document.getElementById('output');
 
         this.formatter = Intl.DateTimeFormat('pt', {
             locale: 'pt-br',
@@ -13,12 +16,35 @@ export default class ViewManager {
             hour: '2-digit',
             minute: '2-digit'
         })
+
+        this.modalInstance = {};
+    }
+
+    configureModal() {
+        this.modalInstance = M.Modal.init(this.progressModal, {
+            opacity: 0,
+            dismissable: false,
+            onOpenEnd() {
+                this.$overlay[0].remove();
+            }
+        })
+    }
+
+    openModal() {
+        this.modalInstance.open();
+    }
+
+    closeModal() {
+        this.modalInstance.close();
+    }
+
+    updateStatus(size) {
+        this.output.innerHTML = `Uploading in <b>${Math.floor(size)}%</b>`;
+        this.progressBar.value = size;
     }
 
     configureOnFileChange(fn) {
-        this.newFileInput.onchange = (event) => {
-            fn(event.target.files);
-        }
+        this.newFileInput.onchange = (event) => fn(event.target.files);
     }
 
     configureFileButtonClick() {
